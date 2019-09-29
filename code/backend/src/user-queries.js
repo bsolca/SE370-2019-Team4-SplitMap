@@ -71,3 +71,11 @@ const deleteUser = (request, response) => {
         response.status(200).send(`User deleted with ID: ${id}`)
     })
 };
+
+module.exports = {
+    getUser,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser,
+};
