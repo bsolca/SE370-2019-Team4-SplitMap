@@ -10,8 +10,8 @@ const pool = Pool({
 });
 
 // GET all users
-const getUser = (request, response) => {
-  pool.query('SELECT * FROM users ORDER BY is ASC', (error, result) => {
+const getUsers = (request, response) => {
+  pool.query('SELECT * FROM users ORDER BY id ASC', (error, result) => {
       if (error) {
           throw error;
       }
@@ -73,7 +73,7 @@ const deleteUser = (request, response) => {
 };
 
 module.exports = {
-    getUser,
+    getUsers,
     getUserById,
     createUser,
     updateUser,
