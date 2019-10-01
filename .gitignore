@@ -16,5 +16,5 @@
 # IntelliJ
 .idea
 
-# Gradle
-.gradle
+# Node modules
+/code/backend/node_modules/
