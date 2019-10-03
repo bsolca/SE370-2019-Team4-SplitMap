@@ -23,14 +23,14 @@ app.post('/users', db.createUser);
 app.put('/users/:id', db.updateUser);
 app.delete('/users/:id', db.deleteUser);
 
-app.get('/maps',mapsQueries.getMaps);
-app.get('/maps/:id',mapsQueries.getMapById);
-app.get('/maps/:size',mapsQueries.getMapSize);
-app.post('/maps/',mapsQueries.createMap);
-app.delete('/maps',mapsQueries.deleteMap);
-app.put('/maps/:id,size',mapsQueries.updateMap);
-app.put('/maps/:id',mapsQueries.addMapUser);
-app.put('/maps/:id',mapsQueries.delMapUser);
+app.get('/maps', mapsQueries.getMaps);
+app.get('/maps/:id', mapsQueries.getMapById);
+app.get('/maps/:size', mapsQueries.getMapSize);
+app.post('/maps/', mapsQueries.createMap);
+app.delete('/maps', mapsQueries.deleteMap);
+app.put('/maps/:id,size', mapsQueries.updateMap);
+app.put('/maps/:id', mapsQueries.addMapUser);
+app.put('/maps/:id', mapsQueries.delMapUser);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
