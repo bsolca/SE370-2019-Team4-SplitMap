@@ -1,4 +1,12 @@
-var pool = require('./elephantsql').elephantPool;
+const Pool = require('pg').Pool;
+
+// TODO: set up proper config file
+const pool = Pool({
+    id: 123,
+    name: 'foo',
+    user: 'me',
+    size: 0,
+});
 
 // GET all maps
 const getMaps = (request, response) => {
@@ -83,7 +91,7 @@ const addMapUser = (request,response) => {
     })
 };
 
-// PUT blank username in place of already existing one
+// DELETE user name from existing map (replace it with blank space)
 const delMapUser = (request,response) => {
     const id = parseInt(request.params.id);
     const user = '';
