@@ -1,16 +1,8 @@
-const Pool = require('pg').Pool;
-
-// TODO: set up proper config file
-const pool = Pool({
-    id: 123,
-    name: 'foo',
-    user: 'me',
-    size: 0,
-});
+var elephantPool = require('./elephantsql').elephantPool;
 
 // GET all maps
 const getMaps = (request, response) => {
-  pool.query('SELECT * FROM maps ORDER BY id ASC', (error, result) => {
+    elephantPool.query('SELECT * FROM maps ORDER BY id ASC', (error, result) => {
       if (error) {
           throw error;
       }
@@ -22,7 +14,7 @@ const getMaps = (request, response) => {
 const getMapById = (request, response) => {
     const id = parseInt(request.params.id);
 
-    pool.query('SELECT * FROM maps WHERE id = $1', [id], (error, result) => {
+    elephantPool.query('SELECT * FROM maps WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
         }
@@ -34,7 +26,7 @@ const getMapById = (request, response) => {
 const getMapSize = (request,response) => {
     const id = parseInt(request.params.id);
 
-    pool.query('SELECT * FROM maps WHERE id = $1',[id], (error,result) => {
+    elephantPool.query('SELECT * FROM maps WHERE id = $1',[id], (error,result) => {
         if(error){
             throw error
         }
@@ -44,9 +36,9 @@ const getMapSize = (request,response) => {
 
 // POST a new map
 const createMap = (request, response) => {
-    const { id, name } = request.body;
+    const { name, size_width, size_height } = request.body;
 
-    pool.query('INSERT INTO maps (id, name) VALUES ($1, $2)', [id, name], (error, result) => {
+    elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_height, size_width], (error, result) => {
         if (error) {
             throw error
         }
@@ -58,7 +50,7 @@ const createMap = (request, response) => {
 const deleteMap = (request, response) => {
     const id = parseInt(request.params.id);
 
-    pool.query('DELETE FROM maps WHERE id = $1', [id], (error, result) => {
+    elephantPool.query('DELETE FROM maps WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
         }
@@ -71,7 +63,8 @@ const updateMap = (request,response) => {
     const id = parseInt(request.params.id);
     const {name,user} = request.body;
     const size = parseInt(request.params.size);
-    pool.query('UPDATE maps SET name = $1, user = $2, size = $3 WHERE id = $4', [name,user,size,id], (error,result) => {
+
+    elephantPool.query('UPDATE maps SET name = $1, user = $2, size = $3 WHERE id = $4', [name,user,size,id], (error,result) => {
         if (error){
             throw error
         }
@@ -83,7 +76,8 @@ const updateMap = (request,response) => {
 const addMapUser = (request,response) => {
     const id = parseInt(request.params.id);
     const user = request.body;
-    pool.query('UPDATE maps SET user = $1 WHERE id = $2', [user, id], (error, result) => {
+
+    elephantPool.query('UPDATE maps SET user = $1 WHERE id = $2', [user, id], (error, result) => {
         if(error){
             throw error
         }
@@ -95,7 +89,8 @@ const addMapUser = (request,response) => {
 const delMapUser = (request,response) => {
     const id = parseInt(request.params.id);
     const user = '';
-    pool.query('UPDATE maps set user = $1 WHERE id = $2', [user,id], (error, result) => {
+
+    elephantPool.query('UPDATE maps set user = $1 WHERE id = $2', [user,id], (error, result) => {
         if(error){
             throw error
         }
