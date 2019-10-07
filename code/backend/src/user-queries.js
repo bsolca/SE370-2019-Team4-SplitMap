@@ -1,17 +1,8 @@
-const Pool = require('pg').Pool;
-
-// This configuration file should not be use in production. It's only for simplicity that it's hard-coded
-const pool = Pool({
-    user: 'me',
-    host: 'localhost',
-    database: 'api',
-    password: 'password',
-    port: 5432,
-});
+var elephantPool = require('./elephantsql').elephantPool;
 
 // GET all users
 const getUsers = (request, response) => {
-  pool.query('SELECT * FROM users ORDER BY id ASC', (error, result) => {
+  elephantPool.query('SELECT * FROM users ORDER BY id ASC', (error, result) => {
       if (error) {
           throw error;
       }
@@ -23,7 +14,7 @@ const getUsers = (request, response) => {
 const getUserById = (request, response) => {
     const id = parseInt(request.params.id);
 
-    pool.query('SELECT * FROM users WHERE id = $1', [id], (error, result) => {
+    elephantPool.query('SELECT * FROM users WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
         }
@@ -35,7 +26,7 @@ const getUserById = (request, response) => {
 const createUser = (request, response) => {
     const { name, email } = request.body;
 
-    pool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email], (error, result) => {
+    elephantPool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email], (error, result) => {
         if (error) {
             throw error
         }
@@ -48,7 +39,7 @@ const updateUser = (request, response) => {
     const id = parseInt(request.params.id);
     const { name, email } = request.body;
 
-    pool.query(
+    elephantPool.query(
         'UPDATE users SET name = $1, email = $2 WHERE id = $3',
         [name, email, id],
         (error, result) => {
@@ -64,7 +55,7 @@ const updateUser = (request, response) => {
 const deleteUser = (request, response) => {
     const id = parseInt(request.params.id);
 
-    pool.query('DELETE FROM users WHERE id = $1', [id], (error, result) => {
+    elephantPool.query('DELETE FROM users WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
         }
