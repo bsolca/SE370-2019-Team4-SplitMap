@@ -1,0 +1,17 @@
+{ 
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Split Swagger Api Documentation",
+        "description": "The open API to communicate with the React.js app of Split map"
+    },
+    "defintions": {
+        "id": {
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
