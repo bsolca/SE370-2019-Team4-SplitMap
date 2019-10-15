@@ -29,8 +29,6 @@ app.get('/maps/:size', mapsQueries.getMapSize);
 app.post('/maps/', mapsQueries.createMap);
 app.delete('/maps', mapsQueries.deleteMap);
 app.put('/maps/:id,size', mapsQueries.updateMap);
-app.put('/maps/:id', mapsQueries.addMapUser);
-app.put('/maps/:id', mapsQueries.delMapUser);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

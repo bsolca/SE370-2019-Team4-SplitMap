@@ -26,11 +26,11 @@ const getMapById = (request, response) => {
 const getMapSize = (request,response) => {
     const id = parseInt(request.params.id);
 
-    elephantPool.query('SELECT * FROM maps WHERE id = $1',[id], (error,result) => {
+    elephantPool.query('SELECT * FROM maps WHERE id = $1', [id], (error,result) => {
         if(error){
             throw error
         }
-        response.status(200).send(`Map size: ${result.size}`)
+        response.status(200).send(`Map width: ${result.size_width}, map height: ${result.size_height}`)
     })
 };
 
@@ -38,7 +38,7 @@ const getMapSize = (request,response) => {
 const createMap = (request, response) => {
     const { name, size_width, size_height } = request.body;
 
-    elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_height, size_width], (error, result) => {
+    elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_width, size_height], (error, result) => {
         if (error) {
             throw error
         }
@@ -61,42 +61,14 @@ const deleteMap = (request, response) => {
 // PUT updated data into existing map
 const updateMap = (request,response) => {
     const id = parseInt(request.params.id);
-    const {name,user} = request.body;
-    const size = parseInt(request.params.size);
+    const {name, size_width, size_height} = request.body;
 
-    elephantPool.query('UPDATE maps SET name = $1, user = $2, size = $3 WHERE id = $4', [name,user,size,id], (error,result) => {
+    elephantPool.query('UPDATE maps SET name = $1, size_width = $2, size_height = $3 WHERE id = $4', [name,size_width,size_height,id], (error,result) => {
         if (error){
             throw error
         }
         response.status(200).send(`Map ID# ${id} has been updated`)
     })
-};
-
-// PUT user name into existing map
-const addMapUser = (request,response) => {
-    const id = parseInt(request.params.id);
-    const user = request.body;
-
-    elephantPool.query('UPDATE maps SET user = $1 WHERE id = $2', [user, id], (error, result) => {
-        if(error){
-            throw error
-        }
-        response.status(200).send(`Username ${user} set`)
-    })
-};
-
-// DELETE user name from existing map (replace it with blank space)
-const delMapUser = (request,response) => {
-    const id = parseInt(request.params.id);
-    const user = '';
-
-    elephantPool.query('UPDATE maps set user = $1 WHERE id = $2', [user,id], (error, result) => {
-        if(error){
-            throw error
-        }
-        response.status(200).send(`Map ID ${id} username cleared`)
-    })
-
 };
 
 module.exports = {
@@ -106,6 +78,4 @@ module.exports = {
     createMap,
     deleteMap,
     updateMap,
-    addMapUser,
-    delMapUser,
 };
