@@ -1,11 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors')
 const port = 3000;
 const db = require('./user-queries');
 const mapsQueries = require('./maps-queries');
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use(
     bodyParser.urlencoded({
