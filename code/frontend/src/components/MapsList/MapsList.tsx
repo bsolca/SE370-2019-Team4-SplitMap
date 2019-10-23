@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, Button } from 'antd';
 import { List, Avatar, Typography } from 'antd';
-import { LoginForm } from './AddMap/AddMap';
+import { AddMapComp } from './AddMap/AddMap';
 
 const axios = require('axios').default;
 const { Content, Footer } = Layout;
@@ -32,7 +32,7 @@ export class MapsList extends React.Component {
         const { data } = res;
         this.setState({ data });
       })
-  }
+  };
 
   render() {
     return (
@@ -40,7 +40,7 @@ export class MapsList extends React.Component {
         <Content style={{ margin: '16px' }}>
           <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
             <Title>Maps</Title>
-            <LoginForm />
+            <AddMapComp reload={this.reload}/>
             <List
               itemLayout="horizontal"
               dataSource={this.state.data}
