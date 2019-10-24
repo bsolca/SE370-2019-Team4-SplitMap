@@ -3,7 +3,7 @@ import {Button, Form, Input} from "antd";
 import {FormComponentProps} from "antd/lib/form";
 import axios from 'axios';
 
-interface MapsFormProps extends FormComponentProps{
+interface MapsFormProps extends FormComponentProps {
     reload: () => void;
 }
 
