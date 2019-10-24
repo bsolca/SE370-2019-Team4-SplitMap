@@ -16,6 +16,9 @@
 # IntelliJ
 .idea
 
+# vscode
+.vscode
+
 # Node modules
 /code/backend/node_modules/
 /code/frontend/node_modules/
