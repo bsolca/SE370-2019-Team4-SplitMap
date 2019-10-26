@@ -1,10 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors')
 const port = 3000;
 const db = require('./user-queries');
+const mapsQueries = require('./maps-queries');
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use(
     bodyParser.urlencoded({
@@ -21,6 +24,13 @@ app.get('/users/:id', db.getUserById);
 app.post('/users', db.createUser);
 app.put('/users/:id', db.updateUser);
 app.delete('/users/:id', db.deleteUser);
+
+app.get('/maps', mapsQueries.getMaps);
+app.get('/maps/:id', mapsQueries.getMapById);
+app.get('/maps/:id', mapsQueries.getMapSize);
+app.post('/maps/', mapsQueries.createMap);
+app.delete('/maps/:id', mapsQueries.deleteMap);
+app.put('/maps/:id', mapsQueries.updateMap);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)
