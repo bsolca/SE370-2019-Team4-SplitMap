@@ -76,7 +76,6 @@ const updateMap = (request,response) => {
 module.exports = {
     getMaps,
     getMapById,
-    getMapSize,
     createMap,
     deleteMap,
     updateMap,
