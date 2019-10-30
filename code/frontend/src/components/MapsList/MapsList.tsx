@@ -2,41 +2,32 @@ import React from 'react';
 import {Layout, Button} from 'antd';
 import {List, Avatar, Typography} from 'antd';
 import {AddMapComp} from './AddMap/AddMap';
+import axios from 'axios'
+import {Link} from "react-router-dom";
 
-const axios = require('axios').default;
 const {Content, Footer} = Layout;
 const {Title} = Typography;
 
 
-export interface map_i {
+export interface IMap {
     id: number,
     name: string,
     size_width: number,
     size_height: number,
-    href: string,
 }
 
-const data: map_i[] = [];
+const data: IMap[] = [];
 
 export default class MapsList extends React.Component {
-    state = {
+    public state = {
         data
     };
 
-    componentDidMount() {
+    public componentDidMount() {
         this.reload();
     }
 
-    reload = () => {
-        axios.get('http://localhost:3000/maps')
-            .then((res: { data: map_i[]; }) => {
-                const {data} = res;
-                console.log(res);
-                this.setState({data});
-            })
-    };
-
-    render() {
+    public render() {
         return (
             <Layout>
                 <Content style={{margin: '16px'}}>
@@ -46,24 +37,7 @@ export default class MapsList extends React.Component {
                         <List
                             itemLayout="horizontal"
                             dataSource={this.state.data}
-                            renderItem={item => (
-                                <div>
-                                    <List.Item>
-                                            <List.Item.Meta
-                                                avatar={<Avatar
-                                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                                                title={<a href="https://ant.design">{item.name}</a>}
-                                                description={`Height: ${item.size_height}`}
-
-                                            />
-                                            <div><Button onClick={() => {
-                                                axios.delete(`http://localhost:3000/maps/${item.id}`)
-                                                    .then(this.reload);
-                                            }} type="danger" shape="round" icon="close"/>
-                                            </div>
-                                    </List.Item>
-                                </div>
-                            )}
+                            renderItem={this.createList}
                         />
                     </div>
                 </Content>
@@ -71,4 +45,35 @@ export default class MapsList extends React.Component {
             </Layout>
         );
     }
+
+    public createList = (item: IMap) => (
+        <div>
+            <List.Item>
+                <List.Item.Meta
+                    avatar={<Avatar
+                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
+                    title={<Link to={{
+                        pathname: '/map',
+                        state: item
+                    }} >{item.name}</Link>}
+                    description={`Height: ${item.size_height}`}
+
+                />
+                <div><Button onClick={() => {
+                    axios.delete(`http://localhost:3000/maps/${item.id}`)
+                        .then(this.reload);
+                }} type="danger" shape="round" icon="close"/>
+                </div>
+            </List.Item>
+        </div>
+    );
+
+    private reload = () => {
+        axios.get('http://localhost:3000/maps')
+            .then((res: { data: IMap[]; }) => {
+                const { data } = res;
+                console.log(res);
+                this.setState({data});
+            })
+    };
 }
