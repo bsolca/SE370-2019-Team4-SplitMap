@@ -22,28 +22,30 @@ const getMapById = (request, response) => {
     })
 };
 
-// GET a map's size
-const getMapSize = (request,response) => {
-    const id = parseInt(request.params.id);
-
-    elephantPool.query('SELECT * FROM maps WHERE id = $1', [id], (error,result) => {
-        if(error){
-            throw error
-        }
-        response.status(200).send(`Map width: ${result.size_width}, map height: ${result.size_height}`)
-    })
-};
-
 // POST a new map
 const createMap = (request, response) => {
     const { name, size_width, size_height } = request.body;
-
+    if(/[^a-zA-Z0-9]/.test(name)){ //if there are any special chars in name
+        response.status(400).send(`Invalid name; no special characters.`)
+        return -1
+    }
+    if(size_width < 1 || size_width > 30){
+        response.status(400).send(`Invalid width.`)
+        return -1
+    }
+    if(size_height < 1 || size_height > 30){
+        response.status(400).send(`Invalid height.`)
+        return -1
+    }
+    elephantPool.query('SELECT id FROM maps WHERE name = $1',[name], (error, result) => {
+    if(result.rowCount == 0){
     elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_width, size_height], (error, result) => {
         if (error) {
             throw error
         }
-        response.status(201).send(`Map added with ID: ${result.insertId}`)
+        response.status(201).send(`Map added with ID: ${result.id}`)
     })
+}
 };
 
 // DELETE a map
