@@ -1,12 +1,15 @@
 import React, {useState} from "react";
-import {IMap} from "../MapsList/MapsList";
 import {LocationState} from "history";
+import MapTable from "./MapTable/MapTable";
 
 function Map(props: LocationState) {
     const [mapName] = useState(props.location.state.name);
     console.log(props);
     return (
-        <div>Hello I'm a {mapName}</div>
+        <div>
+            Hello I'm a {mapName}
+            {MapTable()}
+        </div>
     )
 }
 

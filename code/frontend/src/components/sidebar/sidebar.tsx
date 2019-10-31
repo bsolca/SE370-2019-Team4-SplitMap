@@ -7,18 +7,18 @@ import {Link} from "react-router-dom";
 const {Sider} = Layout;
 
 export class Sidebar extends React.Component {
-    state = {
+    public state = {
         collapsed: false,
     };
 
-    onCollapse = (collapsed: any) => {
+    public onCollapse = (collapsed: any) => {
         console.log(collapsed);
         this.setState({collapsed});
     };
 
-    render() {
+    public render() {
         return (
-            <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
+            <Sider collapsible={true} collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
                 <div className="logo"/>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                     <Menu.Item key="1">
