@@ -38,15 +38,18 @@ const createMap = (request, response) => {
         return -1
     }
     elephantPool.query('SELECT id FROM maps WHERE name = $1',[name], (error, result) => {
-    if(result.rowCount == 0){
-    elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_width, size_height], (error, result) => {
-        if (error) {
-            throw error
-        }
-        response.status(201).send(`Map added with ID: ${result.id}`)
+        if(result.rowCount == 0){
+        elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_width, size_height], (error, result) => {
+            if (error) {
+                throw error
+            }
+            response.status(201).send(`Map added with ID: ${result.id}`)
+        })
+    }
+        else
+            response.status(400).send(`Duplicate names are not allowed.`)
     })
-}
-};
+    };
 
 // DELETE a map
 const deleteMap = (request, response) => {
@@ -73,10 +76,26 @@ const updateMap = (request,response) => {
     })
 };
 
+// GET all child shelves for a specific map
+const getChildShelves = (request,response) => {
+    const { name } = request.body;
+    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [name], (error,result) => {
+        if(error){
+            throw error
+        }
+        if(result.rowCount == 0){
+            response.status(200).send(`Map has no shelves.`)
+            return 1
+            }
+        response.status(200).json(result.rows)
+    })
+};
+
 module.exports = {
     getMaps,
     getMapById,
     createMap,
     deleteMap,
     updateMap,
+    getChildShelves,
 };
