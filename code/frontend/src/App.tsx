@@ -1,6 +1,5 @@
 import React from 'react';
-import './App.css';
-import { Sidebar } from './components/sidebar/sidebar'
+import './App.scss';
 import { Layout } from 'antd';
 import Routes from "./Routes";
 
