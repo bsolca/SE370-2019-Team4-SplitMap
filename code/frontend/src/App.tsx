@@ -1,16 +1,14 @@
 import React from 'react';
-import './App.css';
-import { Sidebar } from './components/sidebar/sidebar'
-import { MapsList } from './components/MapsList/MapsList'
+import './App.scss';
 import { Layout } from 'antd';
+import Routes from "./Routes";
 
 const App: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sidebar/>
-      <MapsList/>
+      <Routes />
     </Layout>
   );
-}
+};
 
 export default App;
