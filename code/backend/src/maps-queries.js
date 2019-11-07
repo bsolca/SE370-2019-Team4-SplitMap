@@ -43,7 +43,7 @@ const createMap = (request, response) => {
             if (error) {
                 throw error
             }
-            response.status(201).send(`Map added with ID: ${result.id}`)
+            response.status(201).send(`Map added successfully.`)
         })
     }
         else

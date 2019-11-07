@@ -24,27 +24,26 @@ const getShelfById = (request, response) => {
 // POST a new shelf
 const createShelf = (request, response) => {
     const { parent_map, x, y } = request.body;
-    if(x < 1 || x > 30){
-        response.status(400).send(`Invalid x coord.`)
-        return -1
-    }
 
-    if(y < 1 || y > 30){
-        response.status(400).send(`Invalid y coord.`)
-        return -1
-    }
-
-    elephantPool.query('SELECT id FROM maps WHERE name = $1',[parent_map], (error, result) => {
+    elephantPool.query('SELECT * FROM maps WHERE name = $1',[parent_map], (error, result) => {
     if(result.rowCount == 0) //if there is no map with name parent_map
     {
         response.status(400).send(`Map does not exist.`)
+        return -1
+    }
+    if(x < 1 || x > result.rows[0].size_width){
+        response.status(400).send(`Invalid x coord.`)
+        return -1
+    }
+    if(y < 1 || y > result.rows[0].size_height){
+        response.status(400).send(`Invalid y coord.`)
         return -1
     }
     elephantPool.query('INSERT INTO shelves (parent_map, x, y) VALUES ($1, $2, $3)', [parent_map, x, y], (error, result) => {
         if (error) {
             throw error
         }
-        response.status(201).send(`Shelf added with ID: ${result.id}`)
+        response.status(201).send(`Shelf added successfully.`)
     })
     })
 };
