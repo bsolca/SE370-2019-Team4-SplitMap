@@ -25,8 +25,8 @@ const getShelfById = (request, response) => {
 const createShelf = (request, response) => {
     const { parent_map, x, y } = request.body;
 
-    elephantPool.query('SELECT * FROM maps WHERE name = $1',[parent_map], (error, result) => {
-    if(result.rowCount == 0) //if there is no map with name parent_map
+    elephantPool.query('SELECT * FROM maps WHERE id = $1',[parent_map], (error, result) => {
+    if(result.rowCount == 0) //if there is no map with id parent_map
     {
         response.status(400).send(`Map does not exist.`)
         return -1

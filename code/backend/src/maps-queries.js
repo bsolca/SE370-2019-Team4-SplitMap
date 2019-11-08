@@ -78,8 +78,8 @@ const updateMap = (request,response) => {
 
 // GET all child shelves for a specific map
 const getChildShelves = (request,response) => {
-    const { name } = request.body;
-    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [name], (error,result) => {
+    const { id } = request.body;
+    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [id], (error,result) => {
         if(error){
             throw error
         }
