@@ -51,9 +51,14 @@ const createMap = (request, response) => {
     })
     };
 
-// DELETE a map
+// DELETE a map and child shelves
 const deleteMap = (request, response) => {
     const id = parseInt(request.params.id);
+    elephantPool.query('DELETE FROM shelves WHERE parent_map = $1', [id], (error, result) => { //delete child shelves, if there are any
+        if(error){
+            throw error
+        }
+    })
 
     elephantPool.query('DELETE FROM maps WHERE id = $1', [id], (error, result) => {
         if (error) {
