@@ -26,7 +26,8 @@ function MapTable(map: IMap) {
     const size = getSize(map);
 
     const setP = (x:number, y:number) => {
-        setPos({x, y})
+        setPos({x, y});
+        shelves.push({x,y});
     };
 
     const putCell = (props:IMap, x:number, y:number, isShelf:boolean) => {
