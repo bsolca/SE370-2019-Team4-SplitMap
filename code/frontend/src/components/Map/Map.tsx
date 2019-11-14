@@ -8,8 +8,8 @@ function Map(props: LocationState) {
 
     console.log(props);
     return (
-        <div>
-            Hello I'm a {mapName}
+        <div style={{width:'100%'}}>
+            <h1 style={{textAlign:"center", margin:"2%", fontSize:"4em"}}>{mapName}</h1>
             {MapTable(map)}
         </div>
     )

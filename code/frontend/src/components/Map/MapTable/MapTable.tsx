@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useReducer, useState} from "react";
 import {IMap} from "../../MapsList/MapsList";
 import {Button} from "antd";
 
@@ -8,6 +8,11 @@ const shelves = [
     {x: 6, y: 4}
 ];
 
+interface IPos {
+    x: number,
+    y: number,
+}
+
 function getSize(map: IMap): number {
     const sideBarSize = 200;
     const w = (window.innerWidth - sideBarSize) / map.size_width;
@@ -15,34 +20,40 @@ function getSize(map: IMap): number {
     return w < h ? w : h;
 }
 
-function putShelves(map: IMap) {
-    const size = getSize(map);
-    return <Button type="primary" icon="table" size={"large"} style={{
-        height: size,
-        width: size
-    }}/>
-}
 
 function MapTable(map: IMap) {
+    const [pos, setPos] = useState({x:0, y:0});
     const size = getSize(map);
-    const nothing = <Button type="ghost" size={"large"} disabled={true} style={{
-        height: size,
-        width: size
-    }}/>;
+
+    const setP = (x:number, y:number) => {
+        setPos({x, y})
+    };
+
+    const putShelves = (props:IMap, x:number, y:number, isShelf:boolean) => {
+        // tslint:disable-next-line:jsx-no-lambda
+        return <Button onClick={() => setP(x,y)} type={isShelf ? "primary" : "default"} icon={isShelf ? "table" : "plus"} size={"large"} style={{
+                    height: size,
+                    width: size
+                }}/>
+    };
+
     return (
-        <table>
-            <tbody>
-            {Array.from(Array(map.size_width)).map((tr, line) =>
-                <tr key={line}>
-                    {Array.from(Array(map.size_height)).map((a, column, arr) =>
-                        <td key={arr.length * line + column + 1}>
-                            {(shelves.some(shelf => (shelf.y === line && shelf.x === column))) ? putShelves(map) : nothing}
-                        </td>
-                    )}
-                </tr>
-            )}
-            </tbody>
-        </table>
+        <div>
+            <span style={{textAlign:"center", display:"block"}}>I click on: {pos.x} and {pos.y}</span>
+            <table style={{margin: "auto"}}>
+                <tbody>
+                {Array.from(Array(map.size_width)).map((tr, line) =>
+                    <tr key={line}>
+                        {Array.from(Array(map.size_height)).map((a, column, arr) =>
+                            <td key={arr.length * line + column + 1}>
+                                {(shelves.some(shelf => (shelf.y === line && shelf.x === column))) ? putShelves(map, column, line, true) : putShelves(map, column, line, false)}
+                            </td>
+                        )}
+                    </tr>
+                )}
+                </tbody>
+            </table>
+        </div>
     )
 }
 
