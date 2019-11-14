@@ -1,17 +1,13 @@
 import React, {useState} from "react";
 import {IMap} from "../../MapsList/MapsList";
 import {Button} from "antd";
+import Shelf from "../../Shelf/Shelf";
 
 const shelves = [
     {x: 1, y: 1},
     {x: 1, y: 2},
     {x: 6, y: 4}
 ];
-
-interface IPos {
-    x: number,
-    y: number,
-}
 
 function getSize(map: IMap): number {
     const sideBarSize = 200;
@@ -22,18 +18,19 @@ function getSize(map: IMap): number {
 
 
 function MapTable(map: IMap) {
-    const [pos, setPos] = useState({x:0, y:0});
+    const [shelf, setShelf] = useState({x:0, y:0, visible:false});
+
     const size = getSize(map);
 
-    const setP = (x:number, y:number) => {
-        setPos({x, y});
+    const setP = (x:number, y:number, visible:boolean):void => {
         shelves.push({x,y});
+        setShelf({x, y, visible});
     };
 
     const putCell = (props:IMap, x:number, y:number, isShelf:boolean) => {
-        // tslint:disable-next-line:jsx-no-lambda
+        const onClick = () => setP(x,y, isShelf);
         return <Button
-            onClick={() => setP(x,y)}
+            onClick={onClick}
             type={isShelf ? "primary" : "default"}
             icon={isShelf ? "table" : "plus"}
             size={"large"} style={{
@@ -44,20 +41,23 @@ function MapTable(map: IMap) {
 
     return (
         <div>
-            <span style={{textAlign:"center", display:"block"}}>I click on: {pos.x} and {pos.y}</span>
+            <span style={{textAlign:"center", display:"block"}}>I click on: {shelf.x} and {shelf.y}</span>
             <table style={{margin: "auto"}}>
                 <tbody>
                 {Array.from(Array(map.size_width)).map((tr, line) =>
                     <tr key={line}>
                         {Array.from(Array(map.size_height)).map((a, column, arr) =>
                             <td key={arr.length * line + column + 1}>
-                                {putCell(map, column, line, shelves.some(shelf => (shelf.y === line && shelf.x === column)))}
+                                {putCell(map, column, line, shelves.some(elem =>
+                                    (elem.y === line && elem.x === column)))}
                             </td>
                         )}
                     </tr>
                 )}
                 </tbody>
             </table>
+            {/* tslint:disable-next-line:jsx-no-lambda */}
+            <Shelf title={`I'm Shelf[${shelf.x}][${shelf.y}]`} visible={shelf.visible} toggleOff={setShelf} x={shelf.x} y={shelf.y}/>
         </div>
     )
 }
