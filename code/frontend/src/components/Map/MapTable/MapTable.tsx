@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from "react";
+import React, {useState} from "react";
 import {IMap} from "../../MapsList/MapsList";
 import {Button} from "antd";
 
@@ -29,9 +29,13 @@ function MapTable(map: IMap) {
         setPos({x, y})
     };
 
-    const putShelves = (props:IMap, x:number, y:number, isShelf:boolean) => {
+    const putCell = (props:IMap, x:number, y:number, isShelf:boolean) => {
         // tslint:disable-next-line:jsx-no-lambda
-        return <Button onClick={() => setP(x,y)} type={isShelf ? "primary" : "default"} icon={isShelf ? "table" : "plus"} size={"large"} style={{
+        return <Button
+            onClick={() => setP(x,y)}
+            type={isShelf ? "primary" : "default"}
+            icon={isShelf ? "table" : "plus"}
+            size={"large"} style={{
                     height: size,
                     width: size
                 }}/>
@@ -46,7 +50,7 @@ function MapTable(map: IMap) {
                     <tr key={line}>
                         {Array.from(Array(map.size_height)).map((a, column, arr) =>
                             <td key={arr.length * line + column + 1}>
-                                {(shelves.some(shelf => (shelf.y === line && shelf.x === column))) ? putShelves(map, column, line, true) : putShelves(map, column, line, false)}
+                                {putCell(map, column, line, shelves.some(shelf => (shelf.y === line && shelf.x === column)))}
                             </td>
                         )}
                     </tr>
