@@ -31,11 +31,11 @@ const createShelf = (request, response) => {
         response.status(400).send(`Map does not exist.`)
         return -1
     }
-    if(x < 1 || x > result.rows[0].size_width){
+    if(x < 0 || x > result.rows[0].size_width){
         response.status(400).send(`Invalid x coord.`)
         return -1
     }
-    if(y < 1 || y > result.rows[0].size_height){
+    if(y < 0 || y > result.rows[0].size_height){
         response.status(400).send(`Invalid y coord.`)
         return -1
     }
@@ -79,11 +79,11 @@ const updateShelf = (request,response) => {
             response.status(400).send(`Map does not exist.`)
             return -1
         }
-        if(x < 1 || x > result.rows[0].size_width){
+        if(x < 0 || x > result.rows[0].size_width){
             response.status(400).send(`Invalid x coord.`)
             return -1
         }
-        if(y < 1 || y > result.rows[0].size_height){
+        if(y < 0 || y > result.rows[0].size_height){
             response.status(400).send(`Invalid y coord.`)
             return -1
         }
