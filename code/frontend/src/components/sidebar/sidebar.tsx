@@ -29,7 +29,7 @@ export class Sidebar extends React.Component {
                     </Menu.Item>
                     <Menu.Item key="2">
                         <Icon type="plus"/>
-                        <span>Create Map</span>
+                        <span>Create New Map</span>
                     </Menu.Item>
                     <Menu.Item key="9">
                         <Icon type="bulb"/>
