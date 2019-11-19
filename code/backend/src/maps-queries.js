@@ -37,23 +37,23 @@ const createMap = (request, response) => {
         response.status(400).send(`Invalid height.`);
         return -1
     }
-    elephantPool.query('SELECT id FROM maps WHERE name = $1', [name], (error, result) => {
-        if (result.rowCount == 0) {
-            elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_width, size_height], (error, result) => {
-                    if (error) {
-                        throw error
-                    }
-                    response.status(201).send(`Map added with ID: ${result.id}`);
-                }
-            )
-        }
+                throw error
     })
 };
 
-// DELETE a map
+// DELETE a map, child shelves and items
 const deleteMap = (request, response) => {
     const id = parseInt(request.params.id);
-
+    elephantPool.query('DELETE FROM shelves WHERE parent_map = $1', [id], (error, result) => { //delete child shelves, if there are any
+        if(error){
+            throw error
+        }
+    })
+    elephantPool.query('DELETE FROM unsorted WHERE parent_map = $1', [id], (error, result) => { //delete child items, if there are any
+        if(error){
+            throw error
+        }
+    })
     elephantPool.query('DELETE FROM maps WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
@@ -75,10 +75,26 @@ const updateMap = (request, response) => {
     })
 };
 
+// GET all child shelves for a specific map
+const getChildShelves = (request,response) => {
+    const { id } = request.body;
+    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [id], (error,result) => {
+        if(error){
+            throw error
+        }
+        if(result.rowCount == 0){
+            response.status(200).send(`Map has no shelves.`)
+            return 1
+            }
+        response.status(200).json(result.rows)
+    })
+};
+
 module.exports = {
     getMaps,
     getMapById,
     createMap,
     deleteMap,
     updateMap,
+    getChildShelves,
 };
