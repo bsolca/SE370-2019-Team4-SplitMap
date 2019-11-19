@@ -3,11 +3,11 @@ import {Button, Form, Input} from "antd";
 import {FormComponentProps} from "antd/lib/form";
 import axios from 'axios';
 
-interface MapsFormProps extends FormComponentProps {
+interface IMapsFormProps extends FormComponentProps {
     reload: () => void;
 }
 
-function AddMap(props: MapsFormProps): JSX.Element {
+function AddMap(props: IMapsFormProps): JSX.Element {
     const [mapName, setMapName] = useState('');
     const [mapWidth, setMapWidth] = useState('');
     const [mapHeight, setMapHeight] = useState('');
@@ -24,10 +24,10 @@ function AddMap(props: MapsFormProps): JSX.Element {
             name: mapName,
             size_width: mapWidth,
             size_height: mapHeight,
-        }).then(function (response) {
+        }).then((response) => {
             console.log(response);
             props.reload();
-        }).catch(function (error) {
+        }).catch((error) => {
             console.log(error);
         });
     };
