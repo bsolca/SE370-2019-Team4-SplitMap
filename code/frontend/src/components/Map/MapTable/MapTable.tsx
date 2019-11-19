@@ -2,12 +2,17 @@ import React, {useState} from "react";
 import {IMap} from "../../MapsList/MapsList";
 import {Button} from "antd";
 import Shelf from "../../Shelf/Shelf";
+import axios from 'axios';
 
 const shelves = [
     {x: 1, y: 1},
     {x: 1, y: 2},
     {x: 6, y: 4}
 ];
+
+function getShelvesList() {
+
+}
 
 function getSize(map: IMap): number {
     const sideBarSize = 200;
@@ -56,7 +61,6 @@ function MapTable(map: IMap) {
                 )}
                 </tbody>
             </table>
-            {/* tslint:disable-next-line:jsx-no-lambda */}
             <Shelf title={`I'm Shelf[${shelf.x}][${shelf.y}]`} visible={shelf.visible} toggleOff={setShelf} x={shelf.x} y={shelf.y}/>
         </div>
     )

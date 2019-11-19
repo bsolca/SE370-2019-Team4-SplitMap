@@ -26,7 +26,7 @@ const getMapById = (request, response) => {
 const createMap = (request, response) => {
     const {name, size_width, size_height} = request.body;
     if (/[^a-zA-Z0-9]/.test(name)) { //if there are any special chars in name
-        response.status(400).send(`Invalid name; no special characters.`)
+        response.status(400).send(`Invalid name; no special characters.`);
         return -1
     }
     if (size_width < 1 || size_width > 30) {
@@ -37,23 +37,22 @@ const createMap = (request, response) => {
         response.status(400).send(`Invalid height.`);
         return -1
     }
-                throw error
-    })
+    throw error
 };
 
 // DELETE a map, child shelves and items
 const deleteMap = (request, response) => {
     const id = parseInt(request.params.id);
     elephantPool.query('DELETE FROM shelves WHERE parent_map = $1', [id], (error, result) => { //delete child shelves, if there are any
-        if(error){
+        if (error) {
             throw error
         }
-    })
+    });
     elephantPool.query('DELETE FROM unsorted WHERE parent_map = $1', [id], (error, result) => { //delete child items, if there are any
-        if(error){
+        if (error) {
             throw error
         }
-    })
+    });
     elephantPool.query('DELETE FROM maps WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
@@ -76,16 +75,16 @@ const updateMap = (request, response) => {
 };
 
 // GET all child shelves for a specific map
-const getChildShelves = (request,response) => {
-    const { id } = request.body;
-    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [id], (error,result) => {
-        if(error){
+const getChildShelves = (request, response) => {
+    const {id} = request.body;
+    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [id], (error, result) => {
+        if (error) {
             throw error
         }
-        if(result.rowCount == 0){
+        if (result.rowCount === 0) {
             response.status(200).send(`Map has no shelves.`)
             return 1
-            }
+        }
         response.status(200).json(result.rows)
     })
 };
