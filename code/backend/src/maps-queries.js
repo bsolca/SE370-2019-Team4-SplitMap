@@ -37,7 +37,6 @@ const createMap = (request, response) => {
         response.status(400).send(`Invalid height.`);
         return -1
     }
-    throw error
 };
 
 // DELETE a map, child shelves and items

@@ -71,6 +71,8 @@ export default class MapsList extends React.Component {
     private reload = () => {
         axios.get('http://localhost:3000/maps')
             .then((res: { data: IMap[]; }) => {
+                const { data } = res;
+                console.log(res);
                 this.setState({data});
             })
     };
