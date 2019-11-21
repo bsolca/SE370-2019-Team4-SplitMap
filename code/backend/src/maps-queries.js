@@ -37,7 +37,13 @@ const createMap = (request, response) => {
         response.status(400).send(`Invalid height.`);
         return -1
     }
-    throw error
+    elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_height, size_width], (error, result) => {
+        if (error) {
+            throw error
+        } else {
+            response.status(201).send(`Map added`)
+        }
+    })
 };
 
 // DELETE a map, child shelves and items

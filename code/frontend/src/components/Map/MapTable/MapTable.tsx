@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {IMap} from "../../MapsList/MapsList";
 import {Button} from "antd";
-import Shelf from "../../Shelf/Shelf";
+import ShelfModal from "../../Shelf/ShelfModal/ShelfModal";
 import axios from 'axios';
 
 interface IShelf {
@@ -10,7 +10,6 @@ interface IShelf {
     x: number,
     y: number,
 }
-
 
 function postShelf(mapId: number, x: number, y: number) {
     axios.post('http://localhost:3000/shelves/', {
@@ -35,30 +34,63 @@ function getShelvesList(id: number): Promise<IShelf[]> {
         });
 }
 
+interface ICellButton {
+    x: number,
+    y: number,
+    isShelf: boolean
+}
+
+function cellsList(map: IMap, shelvesList: IShelf[]): ICellButton[] {
+    const list: ICellButton[] = [];
+    console.log(`Oui ${shelvesList.length}`);
+    for (let i = 0; i < map.size_width; i++) {
+        for (let j = 0; j < map.size_height; j++) {
+            const isBool = shelvesList.some((elem: IShelf) => {
+                console.log(`for i:${i}==${elem.y}j:${j}=${elem.x}`);
+                return (elem.y === i && elem.x === j)
+            });
+            const btn = {x: j, y: j, isShelf: isBool};
+            list.push(btn);
+        }
+    }
+    return list;
+}
+
 function MapTable(map: IMap) {
-    const [shelves, setShelves] = useState({IMap:[]});
-    useEffect(() => {
-        const result = async () => {
-            const res = getShelvesList(map.id);
-            setShelves(res);
-        };
-        result();
-    }, [shelves]);
-
-
+    const [shelves, setShelves] = useState<IShelf[]>([]);
     const [shelf, setShelf] = useState({x: 0, y: 0, visible: false});
+    const [cellList, setCellList] = useState<ICellButton[]>([]);
     const size = getSize(map);
-    const setP = (x: number, y: number, visible: boolean): void => {
-        postShelf(map.id, x, y);
-        setShelf({x, y, visible});
+    const shelfEffect = async () => {
+        setShelves(await getShelvesList(map.id).finally(() => setCellList(() => cellsList(map, shelves))))
     };
 
-    const putCell = (props: IMap, x: number, y: number, isShelf: boolean) => {
-        const onClick = () => setP(x, y, isShelf);
+    useEffect(() => {
+        shelfEffect().then();
+    }, [cellList]);
+
+    const setP = (x: number, y: number, visible: boolean): void => {
+        setShelf({x, y, visible});
+        if (!visible) {
+            cellsList(map, shelves);
+            postShelf(map.id, x, y);
+        }
+    };
+
+    const putCell = (props: IMap, x: number, y: number):JSX.Element => {
+        const isShelf = cellList.some((elem: ICellButton) =>
+            (elem.y === y && elem.x === x));
+        const onClick = () => {
+            setP(x, y, isShelf);
+            console.log(`Hello [${shelf.x},${shelf.y}] and ${shelf.visible} (${isShelf}`)
+        };
+
         return <Button
             onClick={onClick}
-            type={isShelf ? "primary" : "default"}
-            icon={isShelf ? "table" : "plus"}
+            type={cellList.some((elem: ICellButton) =>
+                (elem.y === y && elem.x === x)) ? "primary" : "default"}
+            icon={cellList.some((elem: ICellButton) =>
+                (elem.y === y && elem.x === x)) ? "table" : "plus"}
             size={"large"} style={{
             height: size,
             width: size
@@ -74,18 +106,17 @@ function MapTable(map: IMap) {
                     <tr key={line}>
                         {Array.from(Array(map.size_height)).map((a, column, arr) =>
                             <td key={arr.length * line + column + 1}>
-                                {putCell(map, column, line, shelves.some((elem: IMap) =>
-                                    (elem.size_height === line && elem.size_width === column)))}
+                                {putCell(map, column, line)}
                             </td>
                         )}
                     </tr>
                 )}
                 </tbody>
             </table>
-            <Shelf title={`I'm Shelf[${shelf.x}][${shelf.y}]`} visible={shelf.visible} toggleOff={setShelf} x={shelf.x}
-                   y={shelf.y}/>
-        </div>
-    )
+            <ShelfModal title={`I'm Shelf[${shelf.x}][${shelf.y}]`} visible={shelf.visible} toggleOff={setShelf}
+                        x={shelf.x}
+                        y={shelf.y}/>
+        </div>);
 }
 
 export default MapTable;

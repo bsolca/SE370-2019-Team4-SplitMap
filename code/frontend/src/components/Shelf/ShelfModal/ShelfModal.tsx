@@ -8,7 +8,7 @@ interface IShelfProps extends ModalProps {
     y:number;
 }
 
-function Shelf(props:IShelfProps) {
+function ShelfModal(props:IShelfProps) {
     const onOk = () => {props.toggleOff({x:props.x, y:props.y, visible:false})};
     return <Modal
         title={props.title}
@@ -21,4 +21,4 @@ function Shelf(props:IShelfProps) {
     </Modal>
 }
 
-export default Shelf;
+export default ShelfModal;
