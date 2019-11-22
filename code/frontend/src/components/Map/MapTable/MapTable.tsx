@@ -34,10 +34,17 @@ function getShelvesList(id: number): Promise<IShelf[]> {
         });
 }
 
+function useForceUpdate(){
+    const [value, setValue] = useState(0); // integer state
+    const newValue = value + 1;
+    return () => setValue(newValue); // update the state to force render
+}
+
 function MapTable(map: IMap) {
     const [shelves, setShelves] = useState<IShelf[]>([]);
     const [mouseClick, setMouseClick] = useState({x: 0, y: 0, visible: false});
     const size = getSize(map);
+    const forceUpdate = useForceUpdate();
 
     useEffect(() => {
         const shelfEffect = async () => {
@@ -48,15 +55,23 @@ function MapTable(map: IMap) {
                 setShelves(result);
             })
             .catch(error => console.log(error));
-    }, [map.id]);
+    }, [map.id, forceUpdate]);
 
     const putCell = (props: IMap, x: number, y: number): JSX.Element => {
         let isShelf = shelves.some((elem: IShelf) =>
             (elem.y === y && elem.x === x));
         const onClick = () => {
-            postShelf(map.id, x, y);
-            setMouseClick({x, y, visible: true});
-            isShelf = true;
+            if (isShelf) {
+                setMouseClick({x, y, visible: true});
+            } else {
+                postShelf(map.id, x, y);
+                isShelf = true;
+                shelves.push({id: 2,
+                    parent_map: 2,
+                    x: 2,
+                    y: 2});
+                forceUpdate();
+            }
         };
 
         return <Button
