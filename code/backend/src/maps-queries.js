@@ -26,7 +26,7 @@ const getMapById = (request, response) => {
 const createMap = (request, response) => {
     const {name, size_width, size_height} = request.body;
     if (/[^a-zA-Z0-9]/.test(name)) { //if there are any special chars in name
-        response.status(400).send(`Invalid name; no special characters.`)
+        response.status(400).send(`Invalid name; no special characters.`);
         return -1
     }
     if (size_width < 1 || size_width > 30) {
@@ -37,7 +37,13 @@ const createMap = (request, response) => {
         response.status(400).send(`Invalid height.`);
         return -1
     }
-    throw error
+    elephantPool.query('INSERT INTO maps (name, size_width, size_height) VALUES ($1, $2, $3)', [name, size_height, size_width], (error, result) => {
+        if (error) {
+            throw error
+        } else {
+            response.status(201).send(`Map added`)
+        }
+    })
 };
 
 // DELETE a map, child shelves and items
@@ -47,12 +53,12 @@ const deleteMap = (request, response) => {
         if (error) {
             throw error
         }
-    })
+    });
     elephantPool.query('DELETE FROM unsorted WHERE parent_map = $1', [id], (error, result) => { //delete child items, if there are any
         if (error) {
             throw error
         }
-    })
+    });
     elephantPool.query('DELETE FROM maps WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
@@ -81,7 +87,7 @@ const getChildShelves = (request, response) => {
         if (error) {
             throw error
         }
-        if (result.rowCount == 0) {
+        if (result.rowCount === 0) {
             response.status(200).send(`Map has no shelves.`)
             return 1
         }

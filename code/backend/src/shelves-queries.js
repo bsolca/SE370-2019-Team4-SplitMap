@@ -6,14 +6,15 @@ const getShelves = (request, response) => {
         if (error) {
             throw error;
         }
+        console.log(result.rows);
         response.status(200).json(result.rows);
     })
 };
 
 // GET a single shelf by id
-const getShelfById = (request, response) => {
+const getShelfByMapId = (request, response) => {
     const id = parseInt(request.params.id);
-    elephantPool.query('SELECT * FROM shelves WHERE id = $1', [id], (error, result) => {
+    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [id], (error, result) => {
         if (error) {
             throw error
         }
@@ -112,7 +113,7 @@ const updateShelf = (request, response) => {
 
 module.exports = {
     getShelves,
-    getShelfById,
+    getShelfById: getShelfByMapId,
     createShelf,
     deleteShelf,
     updateShelf,
