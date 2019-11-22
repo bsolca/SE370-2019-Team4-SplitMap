@@ -34,63 +34,35 @@ function getShelvesList(id: number): Promise<IShelf[]> {
         });
 }
 
-interface ICellButton {
-    x: number,
-    y: number,
-    isShelf: boolean
-}
-
-function cellsList(map: IMap, shelvesList: IShelf[]): ICellButton[] {
-    const list: ICellButton[] = [];
-    console.log(`Oui ${shelvesList.length}`);
-    for (let i = 0; i < map.size_width; i++) {
-        for (let j = 0; j < map.size_height; j++) {
-            const isBool = shelvesList.some((elem: IShelf) => {
-                console.log(`for i:${i}==${elem.y}j:${j}=${elem.x}`);
-                return (elem.y === i && elem.x === j)
-            });
-            const btn = {x: j, y: j, isShelf: isBool};
-            list.push(btn);
-        }
-    }
-    return list;
-}
-
 function MapTable(map: IMap) {
     const [shelves, setShelves] = useState<IShelf[]>([]);
-    const [shelf, setShelf] = useState({x: 0, y: 0, visible: false});
-    const [cellList, setCellList] = useState<ICellButton[]>([]);
+    const [mouseClick, setMouseClick] = useState({x: 0, y: 0, visible: false});
     const size = getSize(map);
-    const shelfEffect = async () => {
-        setShelves(await getShelvesList(map.id).finally(() => setCellList(() => cellsList(map, shelves))))
-    };
 
     useEffect(() => {
-        shelfEffect().then();
-    }, [cellList]);
+        const shelfEffect = async () => {
+            setShelves(await getShelvesList(map.id));
+        };
+        shelfEffect()
+            .then(() => (result: IShelf[]) => {
+                setShelves(result);
+            })
+            .catch(error => console.log(error));
+    }, [map.id]);
 
-    const setP = (x: number, y: number, visible: boolean): void => {
-        setShelf({x, y, visible});
-        if (!visible) {
-            cellsList(map, shelves);
-            postShelf(map.id, x, y);
-        }
-    };
-
-    const putCell = (props: IMap, x: number, y: number):JSX.Element => {
-        const isShelf = cellList.some((elem: ICellButton) =>
+    const putCell = (props: IMap, x: number, y: number): JSX.Element => {
+        let isShelf = shelves.some((elem: IShelf) =>
             (elem.y === y && elem.x === x));
         const onClick = () => {
-            setP(x, y, isShelf);
-            console.log(`Hello [${shelf.x},${shelf.y}] and ${shelf.visible} (${isShelf}`)
+            postShelf(map.id, x, y);
+            setMouseClick({x, y, visible: true});
+            isShelf = true;
         };
 
         return <Button
             onClick={onClick}
-            type={cellList.some((elem: ICellButton) =>
-                (elem.y === y && elem.x === x)) ? "primary" : "default"}
-            icon={cellList.some((elem: ICellButton) =>
-                (elem.y === y && elem.x === x)) ? "table" : "plus"}
+            type={isShelf ? "primary" : "default"}
+            icon={isShelf ? "table" : "plus"}
             size={"large"} style={{
             height: size,
             width: size
@@ -99,7 +71,7 @@ function MapTable(map: IMap) {
 
     return (
         <div>
-            <span style={{textAlign: "center", display: "block"}}>I click on: {shelf.x} and {shelf.y}</span>
+            <span style={{textAlign: "center", display: "block"}}>I click on: {mouseClick.x} and {mouseClick.y}</span>
             <table style={{margin: "auto"}}>
                 <tbody>
                 {Array.from(Array(map.size_width)).map((tr, line) =>
@@ -113,9 +85,10 @@ function MapTable(map: IMap) {
                 )}
                 </tbody>
             </table>
-            <ShelfModal title={`I'm Shelf[${shelf.x}][${shelf.y}]`} visible={shelf.visible} toggleOff={setShelf}
-                        x={shelf.x}
-                        y={shelf.y}/>
+            <ShelfModal title={`I'm Shelf[${mouseClick.x}][${mouseClick.y}]`} visible={mouseClick.visible}
+                        toggleOff={setMouseClick}
+                        x={mouseClick.x}
+                        y={mouseClick.y}/>
         </div>);
 }
 
