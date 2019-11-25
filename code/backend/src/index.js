@@ -33,7 +33,7 @@ app.get('/maps/:id', mapsQueries.getMapById);
 app.post('/maps/', mapsQueries.createMap);
 app.delete('/maps/:id', mapsQueries.deleteMap);
 app.put('/maps/:id', mapsQueries.updateMap);
-app.get('maps/', mapsQueries.getChildShelves);
+app.get('maps/:id/getChildren', mapsQueries.getChildShelves);
 
 app.get('/shelves/',shelvesQueries.getShelves);
 app.get('/shelves/:id',shelvesQueries.getShelfById);
@@ -44,14 +44,16 @@ app.put('/shelves/:id',shelvesQueries.updateShelf);
 app.get('/sorted/',sortedQueries.getSortedItems);
 app.get('/sorted/:id',sortedQueries.getSortedById);
 app.post('/sorted/',sortedQueries.createSortedItem);
-app.delete('sorted/:id',sortedQueries.deleteSortedItem);
-app.put('sorted/:id',sortedQueries.updateSortedItem);
+app.delete('/sorted/:id',sortedQueries.deleteSortedItem);
+app.put('/sorted/:id',sortedQueries.updateSortedItem);
+app.put('/sorted/:id/move',sortedQueries.moveSortedItem);
 
 app.get('/unsorted/',unsortedQueries.getUnsortedItems);
 app.get('/unsorted/:id',unsortedQueries.getUnsortedById);
 app.post('/unsorted/',unsortedQueries.createUnsortedItem);
-app.delete('unsorted/:id',unsortedQueries.deleteUnsortedItem);
-app.put('unsorted/:id',unsortedQueries.updateUnsortedItem);
+app.delete('/unsorted/:id',unsortedQueries.deleteUnsortedItem);
+app.put('/unsorted/:id',unsortedQueries.updateUnsortedItem);
+app.put('/unsorted/:id/move',unsortedQueries.moveUnsortedItem);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

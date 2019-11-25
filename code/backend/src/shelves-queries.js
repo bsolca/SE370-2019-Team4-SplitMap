@@ -6,7 +6,6 @@ const getShelves = (request, response) => {
         if (error) {
             throw error;
         }
-        console.log(result.rows);
         response.status(200).json(result.rows);
     })
 };
@@ -42,7 +41,7 @@ const createShelf = (request, response) => {
         }
         elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [parent_map], (error, result) => {
             for (var i = 0; i < result.rowCount; i++) {
-                if (result.rows[i].x === x && result.rows[i].y === y) {
+                if (result.rows[i].x == x && result.rows[i].y == y) {
                     response.status(400).send(`Location is already occupied.`);
                     return -1
                 }
