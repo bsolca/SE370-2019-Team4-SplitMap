@@ -1,52 +1,77 @@
 import React, {Dispatch, SetStateAction} from "react";
-import {Modal} from "antd";
+import {Alert, Descriptions, Modal} from "antd";
 import {ModalProps} from "antd/es/modal";
-
-enum itemState {
-    inStock,
-    movingIn,
-    movingOut
-}
-
-interface IShelfLocation {
-    id:number,
-    level:number
-}
 
 interface IItems {
     title: string,
     description: string,
-    quantity:number
-    state:itemState,
+    quantity: number
     level: number,
-    desiredShelf?:IShelfLocation,
 }
 
 const myItems: IItems[] = [
-    {title: "title", description: "desc1", quantity: 11, state:itemState.inStock, level: 2},
-    {title: "qwerty", description: "desc2", quantity: 22, state:itemState.inStock, level: 1},
-    {title: "asdfg", description: "desc3", quantity: 33, state:itemState.inStock, level: 3},
-    {title: "asdfg", description: "desc3", quantity: 12, state:itemState.movingOut, desiredShelf:{id:12, level:2}, level: 3},
+    {title: "title", description: "desc1", quantity: 11, level: 0},
+    {title: "qwerty", description: "desc2", quantity: 22, level: 1},
+    {title: "asdfg", description: "desc3", quantity: 33, level: 3},
 ];
 
 interface IShelfProps extends ModalProps {
     toggleOff: Dispatch<SetStateAction<{ x: number, y: number, visible: boolean }>>;
+    id: number;
     x: number;
     y: number;
+}
+
+function LevelDescription(item: IItems): JSX.Element {
+    return (
+            <Descriptions bordered={true} column={1}>
+                <Descriptions.Item label="Title" span={1}>{item.title}</Descriptions.Item>
+                <Descriptions.Item label="Quantity" span={1}>{item.quantity}</Descriptions.Item>
+                <Descriptions.Item label="Description" span={1}>{item.description}</Descriptions.Item>
+                <Descriptions.Item  label="Movement" span={1}>PUT MOVEMENT FUNCTION</Descriptions.Item>
+            </Descriptions>
+    );
+}
+
+function getItemsList(shelfId: number): IItems[] {
+    return myItems;
 }
 
 function ShelfModal(props: IShelfProps) {
     const onOk = () => {
         props.toggleOff({x: props.x, y: props.y, visible: false})
     };
+    const items = getItemsList(props.id);
+
+    const levels = () => {
+        const buffer = [];
+
+        for (let i = 0; i < 4; i++) {
+            buffer.push(<h1>{`Level ${i}`}</h1>);
+            if (items.some(item => item.level === i)) {
+                items.find(e => buffer.push(LevelDescription(e)));
+            } else {
+                buffer.push(
+                    <Descriptions.Item>
+                        <Alert message={`No items on level ${i}`} type="info" banner={true}/>
+                    </Descriptions.Item>
+                );
+            }
+        }
+        return buffer;
+    };
     return <Modal
         title={props.title}
         visible={props.visible}
         onOk={onOk}
+        okText={`Close`}
+        cancelText={`Delete Shelf`}
+        width="95%"
+        style={{top: 5}}
     >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <div>
+            {levels()}
+        </div>
     </Modal>
 }
 

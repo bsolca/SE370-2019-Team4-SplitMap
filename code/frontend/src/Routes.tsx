@@ -6,6 +6,7 @@ import {MapComp} from "./components/Map/Map";
 import {Sidebar} from "./components/sidebar/sidebar";
 
 const Routes: React.SFC = () => {
+    console.log("Routes is HERE");
     return (
         <Router>
             <Sidebar />

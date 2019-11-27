@@ -56,7 +56,7 @@ export default class MapsList extends React.Component {
                         pathname: '/map',
                         state: item
                     }} >{item.name}</Link>}
-                    description={`Height: ${item.size_height}`}
+                    description={`Height: ${item.size_height} Width: ${item.size_width}`}
 
                 />
                 <div><Button onClick={() => {
