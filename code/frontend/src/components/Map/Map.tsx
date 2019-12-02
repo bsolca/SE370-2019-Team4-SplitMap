@@ -1,16 +1,15 @@
-import React, {useState} from "react";
-import {LocationState} from "history";
+import React from "react";
 import MapTable from "./MapTable/MapTable";
+import {IMap} from "../MapsList/MapsList";
 
-function Map(props: LocationState) {
-    const [mapName] = useState(props.location.state.name);
-    const [map] = useState(props.location.state);
+function Map(props: IMap) {
+    console.log("I'm in a map");
     return (
         <div style={{width:'100%'}}>
-            <h1 style={{textAlign:"center", margin:"2%", fontSize:"4em"}}>{mapName}</h1>
-            <MapTable id={map.id} name={map.name} size_width={map.size_width} size_height={map.size_height}/>
+            <h1 style={{textAlign:"center", margin:"2%", fontSize:"4em"}}>{props.name}</h1>
+            <MapTable id={props.id} name={props.name} size_width={props.size_width} size_height={props.size_height}/>
         </div>
     )
 }
 
-export const MapComp: any = Map;
+export default Map;

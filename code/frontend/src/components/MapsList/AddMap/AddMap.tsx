@@ -26,7 +26,6 @@ function AddMap(props: IMapsFormProps): JSX.Element {
             size_height: mapHeight,
         }).then((response) => {
             console.log(response);
-            props.reload();
         }).catch((error) => {
             console.log(error);
         });

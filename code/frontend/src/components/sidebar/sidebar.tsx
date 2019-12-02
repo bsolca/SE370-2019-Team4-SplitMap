@@ -2,7 +2,7 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import './sidebar.scss';
 import {Layout, Menu, Icon} from 'antd';
-import {Link} from "react-router-dom";
+import {A} from "hookrouter";
 
 const {Sider} = Layout;
 
@@ -22,10 +22,10 @@ export class Sidebar extends React.Component {
                 <div className="logo"/>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
                     <Menu.Item key="1">
-                        <Link to="/">
+                        <A href="/">
                             <Icon type="bank"/>
                             <span>Maps</span>
-                        </Link>
+                        </A>
                     </Menu.Item>
                     <Menu.Item key="2">
                         <Icon type="plus"/>
