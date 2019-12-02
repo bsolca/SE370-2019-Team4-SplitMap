@@ -93,10 +93,26 @@ const getChildShelves = (request,response) => {
             throw error
         }
         if(result.rowCount == 0){
-            response.status(200).send(`Map has no shelves.`)
-            return 1
+            response.status(200).send(`Map has no shelves.`);
+            return 1;
             }
         response.status(200).json(result.rows)
+    })
+};
+
+//GET a child shelf when given a map and shelf position
+const getChildByPos = (request,response) => {
+    const id = parseInt(request.params.id);
+    const {x,y} = request.body;
+    elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1, x = $2, y = $3', [id, x, y], (error,result) => {
+        if(error){
+            throw error;
+        }
+        if(result.rowCount == 0){
+            response.status(200).send(`Map ID# ${id} has no shelf at position ${x},${y}.`);
+            return 1;
+        }
+        response.status(200).json(result.rows);
     })
 };
 
@@ -107,4 +123,5 @@ module.exports = {
     deleteMap,
     updateMap,
     getChildShelves,
+    getChildByPos,
 };

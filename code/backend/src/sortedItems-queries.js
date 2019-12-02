@@ -153,6 +153,39 @@ const moveSortedItem = (request,response) => {
     })
 };
 
+//move an item from a shelf onto a map
+const exportItem = (request,response) => {
+    const id = parseInt(request.params.id);
+    const {mapId,quantity} = request.body;
+    elephantPool.query('SELECT * FROM sorted WHERE id = $1',[id],(error,result) => {
+        var sourceQuantity = result.rows[0].quantity - quantity;
+        if(result.rowCount == 0){
+            response.status(200).send(`No item exists with id# ${id}.`);
+            return 0;
+        }
+        else{
+            elephantPool.query('INSERT INTO unsorted (parent_map, name, description, quantity) VALUES ($1, $2, $3, $4)', [mapId,result.rows[0].name,result.rows[0].description,quantity], (error,result) => {
+                if(error)
+                    throw error;
+            })
+            if(sourceQuantity == 0){
+                elephantPool.query('DELETE FROM sorted WHERE id = $1',[id],(error,result) => {
+                    if(error)
+                        throw error;
+                })
+                response.status(200).send(`Item# ${id} has been moved onto Map# ${mapId}.`)
+            }
+            else{
+                elephantPool.query('UPDATE sorted SET quantity = $1 WHERE id = $2', [sourceQuantity,id], (error,result) => {
+                    if(error)
+                        throw error;
+                })
+                response.status(200).send(`Item# ${id} has been split onto Map# ${mapId}.`);
+            }
+        }
+    })
+};
+
 module.exports = {
     getSortedItems,
     getSortedById,
@@ -160,4 +193,5 @@ module.exports = {
     deleteSortedItem,
     updateSortedItem,
     moveSortedItem,
+    exportItem,
 };

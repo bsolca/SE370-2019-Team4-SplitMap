@@ -111,11 +111,45 @@ const moveUnsortedItem = (request,response) => {
     })
 };
 
+//move an item from a map onto a shelf
+const importItem = (request,response) => {
+    const id = parseInt(request.params.id);
+    const {shelfId,layer,quantity} = request.body;
+    elephantPool.query('SELECT * FROM unsorted WHERE id = $1',[id],(error,result) => {
+        var sourceQuantity = result.rows[0].quantity - quantity;
+        if(result.rowCount == 0){
+            response.status(200).send(`No item exists with id# ${id}.`);
+            return 0;
+        }
+        else{
+            elephantPool.query('INSERT INTO sorted (parent_shelf,name,description,layer,quantity) VALUES ($1,$2,$3,$4,$5)', [shelfId,result.rows[0].name,result.rows[0].description,layer,quantity], (error,result) => {
+                if(error)
+                    throw error;
+            })
+            if(sourceQuantity == 0){
+                elephantPool.query('DELETE FROM unsorted WHERE id = $1',[id],(error,result) => {
+                    if(error)
+                        throw error;
+                })
+                response.status(200).send(`Item# ${id} has been moved onto Shelf# ${shelfId}.`)
+            }
+            else{
+                elephantPool.query('UPDATE unsorted SET quantity = $1 WHERE id = $2', [sourceQuantity,id], (error,result) => {
+                    if(error)
+                        throw error;
+                })
+                response.status(200).send(`Item# ${id} has been split onto Shelf# ${shelfId}.`);
+            }
+        }
+    })
+};
+
 module.exports = {
     getUnsortedItems,
     getUnsortedById,
     createUnsortedItem,
     deleteUnsortedItem,
     updateUnsortedItem,
-    moveUnsortedItem
+    moveUnsortedItem,
+    importItem,
 };
