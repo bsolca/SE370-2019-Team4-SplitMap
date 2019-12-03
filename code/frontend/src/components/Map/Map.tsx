@@ -1,13 +1,32 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import MapTable from "./MapTable/MapTable";
 import {IMap} from "../MapsList/MapsList";
+import axios from "axios";
 
-function Map(props: IMap) {
+interface Iid {
+    id: number
+}
+
+
+function Map(props: Iid) {
     console.log("I'm in a map");
+    const [map, setMap] = useState<IMap[]>();
+
+    const getMap = async (id: number) => {
+        const url = `http://localhost:3000/maps/${id}`;
+        const response = await axios.get(url);
+        setMap(response.data);
+    };
+
+    useEffect(() => {
+        getMap(props.id).then(() => console.log(`Helllo: ${map !== undefined ? map[0].name : "ok"}`));
+    }, [props.id]);
+
+
     return (
-        <div style={{width:'100%'}}>
-            <h1 style={{textAlign:"center", margin:"2%", fontSize:"4em"}}>{props.name}</h1>
-            <MapTable id={props.id} name={props.name} size_width={props.size_width} size_height={props.size_height}/>
+        <div style={{width: '100%'}}>
+            <h1 style={{textAlign: "center", margin: "2%", fontSize: "4em"}}>{props.id}</h1>
+            <MapTable id={props.id} name={map[0].name} size_width={props.size_width} size_height={props.size_height}/>
         </div>
     )
 }

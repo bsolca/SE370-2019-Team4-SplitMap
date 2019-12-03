@@ -23,7 +23,7 @@ const MapList = () => {
 
     const getMaps = async () => {
         const response = await axios.get('http://localhost:3000/maps');
-        setMaps(response.data);
+        setMaps(response.data.toString);
     };
 
     const deleteMap = async (id: number) => {
@@ -42,7 +42,7 @@ const MapList = () => {
                     <List.Item.Meta
                         avatar={<Avatar
                             src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                        title={<A href={`/map/${item.name}`}>{item.name}</A>}
+                        title={<A href={`/map/${item.id}`}>{item.name}</A>}
                         description={`Height: ${item.size_height} Width: ${item.size_width}`}
                     />
                     <div><Button
@@ -52,7 +52,7 @@ const MapList = () => {
                 </List.Item>
             </div>
         );
-    }
+    };
 
     return (
         <Layout>
