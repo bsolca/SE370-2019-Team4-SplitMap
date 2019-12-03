@@ -20,9 +20,10 @@ function postShelf(mapId: number, x: number, y: number) {
 }
 
 function getSize(map: IMap): number {
-    const sideBarSize = 200;
+    const sideBarSize = 300;
     const w = (window.innerWidth - sideBarSize) / map.size_width;
     const h = (window.innerHeight - sideBarSize) / map.size_height;
+
     return w < h ? w : h;
 }
 
@@ -40,31 +41,36 @@ function useForceUpdate(){
     return () => setValue(newValue); // update the state to force render
 }
 
-function MapTable(map: IMap) {
+function getShelfId(mapId: number, shelfPosX: number, shelfPosY: number):number {
+    console.log(`I ask the shelfID for map[${mapId}] in pos [${shelfPosX},${shelfPosY}]`);
+    return 0;
+}
+
+function MapTable(props: IMap) {
     const [shelves, setShelves] = useState<IShelf[]>([]);
     const [mouseClick, setMouseClick] = useState({x: 0, y: 0, visible: false});
-    const size = getSize(map);
+    const size = getSize(props);
     const forceUpdate = useForceUpdate();
 
     useEffect(() => {
         const shelfEffect = async () => {
-            setShelves(await getShelvesList(map.id));
+            setShelves(await getShelvesList(props.id));
         };
         shelfEffect()
             .then(() => (result: IShelf[]) => {
                 setShelves(result);
             })
             .catch(error => console.log(error));
-    }, [map.id, forceUpdate]);
+    }, [props.id, forceUpdate]);
 
-    const putCell = (props: IMap, x: number, y: number): JSX.Element => {
+    const putCell = (x: number, y: number): JSX.Element => {
         let isShelf = shelves.some((elem: IShelf) =>
             (elem.y === y && elem.x === x));
         const onClick = () => {
             if (isShelf) {
                 setMouseClick({x, y, visible: true});
             } else {
-                postShelf(map.id, x, y);
+                postShelf(props.id, x, y);
                 isShelf = true;
                 shelves.push({id: 2,
                     parent_map: 2,
@@ -89,11 +95,11 @@ function MapTable(map: IMap) {
             <span style={{textAlign: "center", display: "block"}}>I click on: {mouseClick.x} and {mouseClick.y}</span>
             <table style={{margin: "auto"}}>
                 <tbody>
-                {Array.from(Array(map.size_width)).map((tr, line) =>
+                {Array.from(Array(props.size_height)).map((tr, line) =>
                     <tr key={line}>
-                        {Array.from(Array(map.size_height)).map((a, column, arr) =>
+                        {Array.from(Array(props.size_width)).map((a, column, arr) =>
                             <td key={arr.length * line + column + 1}>
-                                {putCell(map, column, line)}
+                                {putCell(column, line)}
                             </td>
                         )}
                     </tr>
@@ -103,7 +109,9 @@ function MapTable(map: IMap) {
             <ShelfModal title={`I'm Shelf[${mouseClick.x}][${mouseClick.y}]`} visible={mouseClick.visible}
                         toggleOff={setMouseClick}
                         x={mouseClick.x}
-                        y={mouseClick.y}/>
+                        y={mouseClick.y}
+                        id={getShelfId(props.id, mouseClick.x, mouseClick.y)}
+            />
         </div>);
 }
 

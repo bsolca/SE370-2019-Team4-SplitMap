@@ -1,17 +1,36 @@
-import React, {useState} from "react";
-import {LocationState} from "history";
+import React, {useEffect, useState} from "react";
 import MapTable from "./MapTable/MapTable";
+import {IMap} from "../MapsList/MapsList";
+import axios from "axios";
 
-function Map(props: LocationState) {
-    const [mapName] = useState(props.location.state.name);
-    const [map] = useState(props.location.state);
-
-    return (
-        <div style={{width:'100%'}}>
-            <h1 style={{textAlign:"center", margin:"2%", fontSize:"4em"}}>{mapName}</h1>
-            {MapTable(map)}
-        </div>
-    )
+interface Iid {
+    id: number
 }
 
-export const MapComp: any = Map;
+
+function Map(props: Iid) {
+    console.log("I'm in a map");
+    const [map, setMap] = useState<IMap>();
+
+    const getMap = async (id: number) => {
+        const url = `http://localhost:3000/maps/${id}`;
+        const response = await axios.get(url);
+        setMap(response.data);
+    };
+
+    useEffect(() => {
+        getMap(props.id).catch((e) => console.error(e));
+    }, [props.id]);
+
+    if (map) {
+        console.log(`Hello here DEBUG`);
+        return (
+            <div style={{width: '100%'}}>
+                <h1 style={{textAlign: "center", margin: "2%", fontSize: "4em"}}>{props.id}</h1>
+                <MapTable id={props.id} name={map.name} size_width={map.size_width} size_height={map.size_height}/>
+            </div>)
+    }
+    return (<div/>);
+}
+
+export default Map;
