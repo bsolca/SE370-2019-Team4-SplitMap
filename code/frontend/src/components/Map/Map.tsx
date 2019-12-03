@@ -10,7 +10,7 @@ interface Iid {
 
 function Map(props: Iid) {
     console.log("I'm in a map");
-    const [map, setMap] = useState<IMap[]>();
+    const [map, setMap] = useState<IMap>();
 
     const getMap = async (id: number) => {
         const url = `http://localhost:3000/maps/${id}`;
@@ -19,16 +19,18 @@ function Map(props: Iid) {
     };
 
     useEffect(() => {
-        getMap(props.id).then(() => console.log(`Helllo: ${map !== undefined ? map[0].name : "ok"}`));
+        getMap(props.id).catch((e) => console.error(e));
     }, [props.id]);
 
-
-    return (
-        <div style={{width: '100%'}}>
-            <h1 style={{textAlign: "center", margin: "2%", fontSize: "4em"}}>{props.id}</h1>
-            <MapTable id={props.id} name={map[0].name} size_width={props.size_width} size_height={props.size_height}/>
-        </div>
-    )
+    if (map) {
+        console.log(`Hello here DEBUG`);
+        return (
+            <div style={{width: '100%'}}>
+                <h1 style={{textAlign: "center", margin: "2%", fontSize: "4em"}}>{props.id}</h1>
+                <MapTable id={props.id} name={map.name} size_width={map.size_width} size_height={map.size_height}/>
+            </div>)
+    }
+    return (<div/>);
 }
 
 export default Map;
