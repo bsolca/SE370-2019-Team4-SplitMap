@@ -23,7 +23,7 @@ const MapList = () => {
 
     const getMaps = async () => {
         const response = await axios.get('http://localhost:3000/maps');
-        setMaps(response.data.toString);
+        setMaps(response.data);
     };
 
     const deleteMap = async (id: number) => {
