@@ -15,10 +15,11 @@ const getMapById = (request, response) => {
     const id = parseInt(request.params.id);
 
     elephantPool.query('SELECT * FROM maps WHERE id = $1', [id], (error, result) => {
-        if (error) {
+        if (error || result.rows.length < 1) {
             throw error
         }
-        response.status(200).json(result.rows)
+        const map = result.rows.pop();
+        response.status(200).json(map)
     })
 };
 
