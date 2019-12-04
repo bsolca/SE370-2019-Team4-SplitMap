@@ -32,7 +32,7 @@ const createUnsortedItem = (request, response) => {
         return -1
     }
     elephantPool.query('SELECT * FROM maps WHERE id = $1',[dest_map],(error,result) => {
-        if(result.rowCount == 0){
+        if(result.rowCount == 0 && dest_map != null){
             response.status(400).send(`Destination map does not exist.`)
             return -1
         }

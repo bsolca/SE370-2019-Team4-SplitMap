@@ -60,11 +60,13 @@ const createShelf = (request, response) => {
 // DELETE a shelf and child items 
 const deleteShelf = (request, response) => {
     const id = parseInt(request.params.id);
+    /*
     elephantPool.query('DELETE FROM sorted WHERE parent_shelf = $1', [id], (error, result) => { //delete child items, if there are any
         if (error) {
             throw error
         }
     })
+    */
     elephantPool.query('DELETE FROM shelves WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
