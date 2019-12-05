@@ -35,33 +35,34 @@ function getShelvesList(id: number): Promise<IShelf[]> {
         });
 }
 
-function useForceUpdate(){
-    const [value, setValue] = useState(0); // integer state
-    const newValue = value + 1;
-    return () => setValue(newValue); // update the state to force render
-}
-
-function getShelfId(mapId: number, shelfPosX: number, shelfPosY: number):number {
-    console.log(`I ask the shelfID for map[${mapId}] in pos [${shelfPosX},${shelfPosY}]`);
-    return 0;
+function getShelfId(shelves: IShelf[], shelfPosX: number, shelfPosY: number): number {
+    console.log(`I ask the shelfID for map[${shelves}] in pos [${shelfPosX},${shelfPosY}]`);
+    for (let i = 0 ; i < shelves.length ; i++) {
+        if (shelves[i].x ===shelfPosX && shelves[i].y === shelfPosY) {
+            console.log("oui on trouve: " + shelves[i].id)
+            return shelves[i].id;
+        }
+    }
+    return -1;
 }
 
 function MapTable(props: IMap) {
     const [shelves, setShelves] = useState<IShelf[]>([]);
     const [mouseClick, setMouseClick] = useState({x: 0, y: 0, visible: false});
     const size = getSize(props);
-    const forceUpdate = useForceUpdate();
+    const [reload, setReload] = useState(0);
+    const shelfEffect = async () => {
+        setShelves(await getShelvesList(props.id));
+    };
 
     useEffect(() => {
-        const shelfEffect = async () => {
-            setShelves(await getShelvesList(props.id));
-        };
+        console.log("On a un bug");
         shelfEffect()
             .then(() => (result: IShelf[]) => {
                 setShelves(result);
             })
             .catch(error => console.log(error));
-    }, [props.id, forceUpdate]);
+    }, [props.id, reload]);
 
     const putCell = (x: number, y: number): JSX.Element => {
         let isShelf = shelves.some((elem: IShelf) =>
@@ -72,12 +73,8 @@ function MapTable(props: IMap) {
             } else {
                 postShelf(props.id, x, y);
                 isShelf = true;
-                shelves.push({id: 2,
-                    parent_map: 2,
-                    x: 2,
-                    y: 2});
-                forceUpdate();
             }
+            setReload(reload + 1);
         };
 
         return <Button
@@ -110,7 +107,7 @@ function MapTable(props: IMap) {
                         toggleOff={setMouseClick}
                         x={mouseClick.x}
                         y={mouseClick.y}
-                        id={getShelfId(props.id, mouseClick.x, mouseClick.y)}
+                        id={getShelfId(shelves, mouseClick.x, mouseClick.y)}
             />
         </div>);
 }

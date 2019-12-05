@@ -17,8 +17,7 @@ export interface IMap {
 }
 
 const MapList = () => {
-    // const [isLoading, setIsLoading] = useState(false);
-    // const [reload, setReload] = useState(0);
+    const [reload, setReload] = useState(0);
     const [maps, setMaps] = useState<IMap[]>([]);
 
     const getMaps = async () => {
@@ -28,11 +27,12 @@ const MapList = () => {
 
     const deleteMap = async (id: number) => {
         await axios.delete(`http://localhost:3000/maps/${id}`);
+        setReload(reload + 1);
     };
 
     useEffect(() => {
             getMaps().then(r => console.log("useEffect for getMaps"));
-    }, []);
+    }, [reload]);
 
 
     const createList = (item: IMap) => {
@@ -59,7 +59,7 @@ const MapList = () => {
             <Content style={{margin: '16px'}}>
                 <div style={{padding: 24, background: '#fff', minHeight: 360}}>
                     <Title>Maps</Title>
-                    <AddMapComp />
+                    <AddMapComp reload={reload} setReload={setReload}/>
                     <List
                         itemLayout="horizontal"
                         dataSource={maps}

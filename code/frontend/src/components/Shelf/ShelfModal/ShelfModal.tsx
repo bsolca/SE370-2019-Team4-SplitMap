@@ -1,6 +1,7 @@
-import React, {Dispatch, SetStateAction} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {Alert, Descriptions, Modal} from "antd";
 import {ModalProps} from "antd/es/modal";
+import axios from "axios";
 
 interface IItems {
     title: string,
@@ -37,9 +38,21 @@ function getItemsList(shelfId: number): IItems[] {
     return myItems;
 }
 
+function deleteShelfById(id: number) {
+    if (id < 0 ) {
+        return ;
+    }
+    const url = `http://localhost:3000/shelves/${id}`;
+    axios.delete(url).then(() => console.log("Map is deleted" + id));
+}
+
 function ShelfModal(props: IShelfProps) {
+    const [shelfId] = useState(props.id);
     const onOk = () => {
         props.toggleOff({x: props.x, y: props.y, visible: false})
+    };
+    const onCancel = () => {
+        deleteShelfById(shelfId);
     };
     const items = getItemsList(props.id);
 
@@ -61,9 +74,10 @@ function ShelfModal(props: IShelfProps) {
         return buffer;
     };
     return <Modal
-        title={props.title}
+        title={props.title + `ID: ${shelfId}`}
         visible={props.visible}
         onOk={onOk}
+        onCancel={onCancel}
         okText={`Close`}
         cancelText={`Delete Shelf`}
         width="95%"

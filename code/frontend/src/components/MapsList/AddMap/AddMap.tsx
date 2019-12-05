@@ -3,11 +3,7 @@ import {Button, Form, Input} from "antd";
 import {FormComponentProps} from "antd/lib/form";
 import axios from 'axios';
 
-interface IMapsFormProps extends FormComponentProps {
-    reload: () => void;
-}
-
-function AddMap(props: IMapsFormProps): JSX.Element {
+function AddMap(props: any): JSX.Element {
     const [mapName, setMapName] = useState('');
     const [mapWidth, setMapWidth] = useState('');
     const [mapHeight, setMapHeight] = useState('');
@@ -26,6 +22,8 @@ function AddMap(props: IMapsFormProps): JSX.Element {
             size_height: mapHeight,
         }).then((response) => {
             console.log(response);
+            setMapName("");
+            props.setReload(props.reload + 1);
         }).catch((error) => {
             console.log(error);
         });
@@ -36,9 +34,10 @@ function AddMap(props: IMapsFormProps): JSX.Element {
             <Form.Item>
                 {getFieldDecorator("name", {
                     rules: [{required: true, message: "Please input map name!"}],
-                    initialValue: mapName,
-                })(<Input
+                    initialValue: mapName})
+                (<Input
                     placeholder="Map name"
+                    value={mapName}
                     onPressEnter={submit}
                     onChange={e => setMapName(e.target.value)}
                 />)}
