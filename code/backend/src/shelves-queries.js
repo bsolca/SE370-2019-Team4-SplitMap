@@ -6,7 +6,6 @@ const getShelves = (request, response) => {
         if (error) {
             throw error;
         }
-        console.log(result.rows);
         response.status(200).json(result.rows);
     })
 };
@@ -42,7 +41,7 @@ const createShelf = (request, response) => {
         }
         elephantPool.query('SELECT * FROM shelves WHERE parent_map = $1', [parent_map], (error, result) => {
             for (var i = 0; i < result.rowCount; i++) {
-                if (result.rows[i].x === x && result.rows[i].y === y) {
+                if (result.rows[i].x == x && result.rows[i].y == y) {
                     response.status(400).send(`Location is already occupied.`);
                     return -1
                 }
@@ -61,11 +60,13 @@ const createShelf = (request, response) => {
 // DELETE a shelf and child items 
 const deleteShelf = (request, response) => {
     const id = parseInt(request.params.id);
+    /*
     elephantPool.query('DELETE FROM sorted WHERE parent_shelf = $1', [id], (error, result) => { //delete child items, if there are any
         if (error) {
             throw error
         }
     })
+    */
     elephantPool.query('DELETE FROM shelves WHERE id = $1', [id], (error, result) => {
         if (error) {
             throw error
