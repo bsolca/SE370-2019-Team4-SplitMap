@@ -12,7 +12,6 @@ export class Sidebar extends React.Component {
     };
 
     public onCollapse = (collapsed: any) => {
-        console.log(collapsed);
         this.setState({collapsed});
     };
 

@@ -7,9 +7,7 @@ interface Iid {
     id: number
 }
 
-
 function Map(props: Iid) {
-    console.log("I'm in a map");
     const [map, setMap] = useState<IMap>();
 
     const getMap = async (id: number) => {
@@ -23,7 +21,6 @@ function Map(props: Iid) {
     }, [props.id]);
 
     if (map) {
-        console.log(`Hello here DEBUG`);
         return (
             <div style={{width: '100%'}}>
                 <h1 style={{textAlign: "center", margin: "2%", fontSize: "4em"}}>{props.id}</h1>
