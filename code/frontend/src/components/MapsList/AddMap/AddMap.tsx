@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {Button, Form, Input} from "antd";
-import {FormComponentProps} from "antd/lib/form";
 import axios from 'axios';
 
 function AddMap(props: any): JSX.Element {
@@ -34,8 +33,7 @@ function AddMap(props: any): JSX.Element {
             <Form.Item>
                 {getFieldDecorator("name", {
                     rules: [{required: true, message: "Please input map name!"}],
-                    initialValue: mapName})
-                (<Input
+                    initialValue: mapName})(<Input
                     placeholder="Map name"
                     value={mapName}
                     onPressEnter={submit}

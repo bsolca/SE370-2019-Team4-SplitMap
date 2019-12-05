@@ -36,10 +36,8 @@ function getShelvesList(id: number): Promise<IShelf[]> {
 }
 
 function getShelfId(shelves: IShelf[], shelfPosX: number, shelfPosY: number): number {
-    console.log(`I ask the shelfID for map[${shelves}] in pos [${shelfPosX},${shelfPosY}]`);
-    for (let i = 0 ; i < shelves.length ; i++) {
-        if (shelves[i].x ===shelfPosX && shelves[i].y === shelfPosY) {
-            console.log("oui on trouve: " + shelves[i].id)
+    for (let i = 0; i < shelves.length; i++) {
+        if (shelves[i].x === shelfPosX && shelves[i].y === shelfPosY) {
             return shelves[i].id;
         }
     }
@@ -51,11 +49,11 @@ function MapTable(props: IMap) {
     const [mouseClick, setMouseClick] = useState({x: 0, y: 0, visible: false});
     const size = getSize(props);
     const [reload, setReload] = useState(0);
-    const shelfEffect = async () => {
-        setShelves(await getShelvesList(props.id));
-    };
 
     useEffect(() => {
+        const shelfEffect = async () => {
+            setShelves(await getShelvesList(props.id));
+        };
         console.log("On a un bug");
         shelfEffect()
             .then(() => (result: IShelf[]) => {
