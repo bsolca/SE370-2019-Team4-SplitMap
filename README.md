@@ -1,5 +1,5 @@
 # SE370-2019-Team4-SplitMap
-## By Benjamin Solca, Trevin Gillies, Stephen Leighton, and Andrew Kuo
+## By Benjamin Solca, Trevin Gillies, and Andrew Kuo
 
 **GOAL**  
 To provide a functioning model of an inventory management system, built to satisfy the needs of  
